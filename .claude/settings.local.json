@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(py:*)",
+      "Bash(powershell -Command \"Get-ChildItem 'C:\\\\Program Files\\\\Python313' | Select-Object Name, Length\")",
+      "Bash(powershell -Command \"& 'C:\\\\Program Files\\\\Python313\\\\python.exe' --version\")",
+      "Bash(powershell -Command \"& 'C:\\\\Program Files\\\\Python313\\\\python.exe' -m pip --version\")",
+      "Bash(powershell -Command \"Start-Process 'D:\\\\ai-news-collector\\\\reports\\\\2026-03-22_dashboard.html'\")",
+      "Bash(\"C:/Program Files/Python313/python.exe\" _test_jobs.py)",
+      "Bash(del _test_jobs.py)",
+      "Bash(\"C:/Program Files/Python313/python.exe\" main.py --hours 720)",
+      "Bash(powershell -Command \"\\(Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_IPAddress -like ''192.168.*'' -or $_IPAddress -like ''10.*'' } | Select-Object -First 1\\).IPAddress\")",
+      "Bash(\"C:/Program Files/Python313/python.exe\" -c \"import socket; s=socket.socket\\(socket.AF_INET,socket.SOCK_DGRAM\\); s.connect\\(\\(''8.8.8.8'',80\\)\\); print\\(s.getsockname\\(\\)[0]\\)\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8080/2026-03-22_dashboard.html)",
+      "Bash(\"C:/Program Files/Python313/python.exe\" _probe.py)",
+      "Bash(\"C:/Program Files/Python313/python.exe\" main.py)",
+      "WebFetch(domain:www.repvue.com)",
+      "WebSearch",
+      "WebFetch(domain:www.nahc.io)",
+      "WebFetch(domain:www.openwork.jp)",
+      "WebFetch(domain:outscal.com)",
+      "WebFetch(domain:gaishitenshoku.com)",
+      "WebFetch(domain:gci-inc.co.jp)",
+      "Bash(\"C:/Program Files/Python313/python.exe\" \"D:/ai-news-collector/main.py\")"
+    ]
+  }
+}
