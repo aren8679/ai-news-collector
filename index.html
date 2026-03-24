@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI News Dashboard</title>
+<script>
+  const today = new Date();
+  const y = today.getFullYear();
+  const m = String(today.getMonth() + 1).padStart(2, "0");
+  const d = String(today.getDate()).padStart(2, "0");
+  window.location.replace(`reports/${y}-${m}-${d}_dashboard.html`);
+</script>
+</head>
+<body>
+<p style="font-family:sans-serif;text-align:center;margin-top:40px;color:#666">
+  リダイレクト中...
+</p>
+</body>
+</html>
