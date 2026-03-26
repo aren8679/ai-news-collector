@@ -1,6 +1,6 @@
 # PROJECT_LOG — ai-news-collector 開発記録
 
-最終更新: 2026-03-22（Phase 8追加）
+最終更新: 2026-03-26（Phase 11追加）
 
 ---
 
@@ -258,6 +258,70 @@ AIニュース収集＆転職活動支援ダッシュボード。
 
 ---
 
+### Phase 9 — GitHub自動プッシュ＆パス修正（2026-03-23）
+
+**目的:** `main.py` 実行後に自動でGitHub Pagesへデプロイする
+
+**実装内容:**
+- `main.py` に `_git_push()` 関数を追加（`git add reports/ → commit → push` を自動実行）
+- `config.py` の `OUTPUT_DIR` を絶対パスに変更（PowerShellのカレントディレクトリ問題を解決）
+- `subprocess` モジュールを使用
+
+**解決した問題:**
+- PowerShellを `C:\Users\arenn\` から実行するとreportsが別ディレクトリに生成されていた
+- `git add` でパス不一致エラーが出ていた → `reports/` 全体をaddするよう変更
+
+---
+
+### Phase 10 — 広告業界版ダッシュボード追加（2026-03-25）
+
+**目的:** AIスタートアップに加えて広告業界（Google/Meta/Microsoft）の企業カルテ・求人を表示
+
+**実装内容:**
+- `dashboard.py` に `AD_SALARY_DATA`、`AD_SALARY_DATA_JP`、`AD_COMPANY_ANALYSIS` を追加
+- 企業カルテタブに「🤖 AIスタートアップ / 📺 広告業界」切り替えボタンを追加
+- `job_collector.py` に `fetch_google_jobs()`、`fetch_meta_jobs()`、`fetch_microsoft_jobs()` を追加
+
+**制約・判断:**
+- Google/Meta/Microsoftは求人APIが非公開のため、公式キャリアページへのリンクカード（各社4件）として実装
+- `_company_profile_json()` の戻り値を `{"ai": ..., "ad": ...}` 構造に変更
+
+---
+
+### Phase 11 — index.htmlリダイレクト＆タスクスケジューラ（2026-03-26）
+
+**目的:** 固定URLでいつでも最新ダッシュボードにアクセスできるようにする
+
+**実装内容:**
+- `index.html` を作成（JavaScriptで今日の日付のダッシュボードURLに自動リダイレクト）
+- `run_daily.bat` を作成（タスクスケジューラ用バッチファイル）
+- `main.py` の `git add` 対象に `index.html` を追加
+
+**アクセスURL:** `https://aren8679.github.io/ai-news-collector/`
+
+---
+
+### Phase 12 — GitHub Actions自動実行（2026-03-26）
+
+**目的:** PCの電源不要で毎朝7時に自動でダッシュボードを更新する
+
+**実装内容:**
+- `.github/workflows/daily.yml` を作成
+  - スケジュール: 毎日 22:00 UTC（= 翌朝 7:00 JST）
+  - `workflow_dispatch` で手動実行ボタンも有効化
+  - GitHubサーバー上でPython実行 → `git commit & push` まで自動
+- `main.py` の `_git_push()` にCI環境スキップ処理を追加
+  - `GITHUB_ACTIONS` または `SKIP_GIT_PUSH` 環境変数があればgit push をスキップ
+  - ローカル実行時は従来通り自動プッシュ
+- `import os` を `main.py` に追加
+
+**GitHub側の設定:**
+- Settings → Actions → General → Workflow permissions → **Read and write permissions** に変更が必要
+
+**結果:** PCの電源・ネット接続不要。スマホから固定URLで毎朝最新ダッシュボードにアクセス可能。
+
+---
+
 ## 既知の問題・制限事項
 
 | 問題 | 状況 |
@@ -270,9 +334,17 @@ AIニュース収集＆転職活動支援ダッシュボード。
 
 ---
 
-## 実行方法（Windows）
+## 実行方法
 
-```bash
-# フルパスで実行（PowerShellのPATH問題を回避）
-"C:/Program Files/Python313/python.exe" main.py
+### 自動実行（推奨）
+GitHub Actionsが毎朝7時（JST）に自動実行。PC不要。
+→ `https://aren8679.github.io/ai-news-collector/` をブックマークするだけ
+
+### 手動実行（Windows PowerShell）
 ```
+& "C:/Program Files/Python313/python.exe" D:/ai-news-collector/main.py
+```
+
+### GitHub Actionsで手動トリガー
+1. `https://github.com/aren8679/ai-news-collector` → Actions タブ
+2. Daily Dashboard Update → Run workflow
