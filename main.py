@@ -12,6 +12,8 @@ from __future__ import annotations
 
 import argparse
 import logging
+import os
+import subprocess
 import sys
 from pathlib import Path
 
@@ -113,6 +115,28 @@ def main() -> None:
     logger.info("  Markdown : %s", report_path)
     logger.info("  Dashboard: %s", dashboard_path)
     logger.info("  記事: %d件 / 求人: %d件", len(articles), len(jobs))
+
+    # ---- 6. Auto-push to GitHub ----
+    _git_push(dashboard_path)
+
+
+def _git_push(dashboard_path: Path) -> None:
+    """Commit and push the latest dashboard to GitHub."""
+    if os.environ.get("SKIP_GIT_PUSH") or os.environ.get("GITHUB_ACTIONS"):
+        logger.info("  git push をスキップ（CI環境）")
+        return
+    repo = Path(__file__).parent
+    try:
+        subprocess.run(["git", "add", "reports/", "index.html"], cwd=repo, check=True)
+        date_str = dashboard_path.stem.split("_")[0]
+        subprocess.run(
+            ["git", "commit", "-m", f"update dashboard {date_str}"],
+            cwd=repo, check=True,
+        )
+        subprocess.run(["git", "push"], cwd=repo, check=True)
+        logger.info("  GitHub Pages に自動プッシュ完了 ✓")
+    except subprocess.CalledProcessError as e:
+        logger.warning("  GitHub プッシュ失敗（手動でプッシュしてください）: %s", e)
 
 
 if __name__ == "__main__":
